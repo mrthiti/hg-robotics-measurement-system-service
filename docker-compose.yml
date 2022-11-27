@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  mongo:
+    image: "mongo"
+    volumes:
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
+  
+  mongo-express:
+      image: mongo-express
+      restart: always
+      ports:
+        - 8111:8081
+      environment:
+        - ME_CONFIG_MONGODB_SERVER=mongo
+  
+  app:
+      build: .
+      restart: always
+      ports:
+        - 3000:3000
+      environment:
+        - MONGODB=mongodb://mongo:27017/MyDatabase
